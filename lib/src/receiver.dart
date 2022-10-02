@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 
-typedef SubtleCrypto = Object;
-
 class VerifyRequest {
   const VerifyRequest({
     required this.signature,
