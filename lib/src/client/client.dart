@@ -249,7 +249,7 @@ class Client {
 
     if (token.isEmpty) {
       throw Exception(
-        'Unable to find environment variable: `UPSTASH_QSTASH_REST_TOKEN`.',
+        'Unable to find environment variable: `QSTASH_REST_TOKEN`.',
       );
     }
 
