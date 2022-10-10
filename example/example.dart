@@ -1,7 +1,7 @@
 import 'package:qstash_dart/qstash_dart.dart';
 
 void main() async {
-  final q = Client.fromEnv();
+  final q = QstashClient.fromEnv();
 
   final receiver = Receiver(
     currentSigningKey: "sig_55CLgfUo1cbmvP6kZ2Z3WU4fQ1A3",

@@ -217,13 +217,13 @@ class GetLogsResponse {
   final List<Log> logs;
 }
 
-class Client {
+class QstashClient {
   final Requester http;
 
-  Client._(Requester requester) : http = requester;
+  QstashClient._(Requester requester) : http = requester;
 
-  factory Client(ClientConfig config) {
-    return Client._(
+  factory QstashClient(ClientConfig config) {
+    return QstashClient._(
       HttpClient(
         HttpClientConfig(
           baseUrl: config.baseUrl != null
@@ -236,11 +236,11 @@ class Client {
     );
   }
 
-  factory Client.byClient(Requester client) {
-    return Client._(client);
+  factory QstashClient.byClient(Requester client) {
+    return QstashClient._(client);
   }
 
-  factory Client.fromEnv({
+  factory QstashClient.fromEnv({
     RetryConfig? retryConfig,
   }) {
     final platform = PlatformEnv();
@@ -253,7 +253,7 @@ class Client {
       );
     }
 
-    return Client(
+    return QstashClient(
       ClientConfig(
         baseUrl: url.isNotEmpty ? url : null,
         token: token,
