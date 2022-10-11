@@ -39,6 +39,8 @@ class Receiver {
     required this.nextSigningKey,
   });
 
+  static final _paddingRegExp = RegExp(r'=+$');
+
   /// The current signing key. Get it from `https://console.upstash.com/qstash
   final String currentSigningKey;
 
@@ -77,7 +79,48 @@ class Receiver {
     final message = utf8.encode('$header.$payload');
     final digest = hmacSha256.convert(message);
 
-    return signature.replaceAll('=', '') ==
-        base64Encode(digest.bytes).replaceAll('=', '');
+    if (signature.replaceAll(_paddingRegExp, '') ==
+        base64Encode(digest.bytes).replaceAll(_paddingRegExp, '')) {
+      throw SignatureError('signature does not match');
+    }
+
+    final decodedPayload = Map<String, dynamic>.from(
+      jsonDecode(
+        String.fromCharCodes(base64Decode(payload)),
+      ),
+    );
+
+    if (decodedPayload['iss'] != 'Upstash') {
+      throw SignatureError('invalid issuer: ${decodedPayload['iss']}');
+    }
+
+    if (request.url != null && decodedPayload['sub'] != request.url) {
+      throw SignatureError('invalid subject: ${decodedPayload['sub']}, want: ${request.url}');
+    }
+
+    final exp = decodedPayload['exp'] as int;
+    final nbf = decodedPayload['nbf'] as int;
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    if (now > exp) {
+      throw SignatureError('token has expired');
+    }
+
+    if (now < nbf) {
+      throw SignatureError('token is not yet valid');
+    }
+
+    final bodyHash = sha256.convert(
+      request.body is String ? utf8.encode(request.body) : request.body,
+    );
+
+    final payloadBody = (decodedPayload['body'] as String).replaceAll(_paddingRegExp, '');
+    final base64EncodedBody = base64Url.encode(bodyHash.bytes).replaceAll(_paddingRegExp, '');
+    if (payloadBody != base64EncodedBody) {
+      throw SignatureError(
+        'body hash does not match, want: $payloadBody, got: $base64EncodedBody',
+      );
+    }
+
+    return true;
   }
 }
