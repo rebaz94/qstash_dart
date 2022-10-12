@@ -78,15 +78,18 @@ class Receiver {
 
     final message = utf8.encode('$header.$payload');
     final digest = hmacSha256.convert(message);
+    final digestBase64 = base64Encode(digest.bytes) //
+        .replaceAll('+', '-')
+        .replaceAll('/', '_');
 
-    if (signature.replaceAll(_paddingRegExp, '') ==
-        base64Encode(digest.bytes).replaceAll(_paddingRegExp, '')) {
+    if (signature.replaceAll(_paddingRegExp, '') != digestBase64.replaceAll(_paddingRegExp, '')) {
       throw SignatureError('signature does not match');
     }
 
+    final normalizedPayload = base64.normalize(payload);
     final decodedPayload = Map<String, dynamic>.from(
       jsonDecode(
-        String.fromCharCodes(base64Decode(payload)),
+        String.fromCharCodes(base64Decode(normalizedPayload)),
       ),
     );
 
