@@ -14,11 +14,12 @@ void main() async {
         PublishRequest(
           destination: Destination(
             type: DestinationType.url,
-            url: 'https://rebaz-qstash.requestcatcher.com/test',
+            url: destinationUrl,
           ),
           body: 'Hi',
         ),
       );
+      expect(response.exception, isNull);
       expect(response.hasValue, true);
       expect(response.value.messageId, isNotNull);
     },
@@ -31,11 +32,12 @@ void main() async {
         PublishRequest(
           destination: Destination(
             type: DestinationType.url,
-            url: 'https://rebaz-qstash.requestcatcher.com/test',
+            url: destinationUrl,
           ),
           body: {'hello': 'world'},
         ),
       );
+      expect(response.exception, isNull);
       expect(response.hasValue, true);
       expect(response.value.messageId, isNotNull);
     },
@@ -48,12 +50,13 @@ void main() async {
         PublishRequest(
           destination: Destination(
             type: DestinationType.url,
-            url: 'https://rebaz-qstash.requestcatcher.com/test',
+            url: destinationUrl,
           ),
           body: {'hello': 'world'},
           cron: '9 * * * *',
         ),
       );
+      expect(response.exception, isNull);
       expect(response.hasValue, true);
       expect(response.value.scheduleId, isNotNull);
       expect(response.value.messageId, isNull);

@@ -15,13 +15,14 @@ void main() async {
         PublishRequest(
           destination: Destination(
             type: DestinationType.url,
-            url: 'https://rebaz-qstash.requestcatcher.com/test',
+            url: destinationUrl,
           ),
           cron: '9 * * * *',
         ),
       );
       final schedule =
           await schedules.get(GetScheduleRequest(result.value.scheduleId!));
+      expect(schedule.exception, isNull);
       expect(schedule.hasValue, true);
       expect(schedule.value, isA<Schedule>());
       expect(schedule.value.scheduleId, result.value.scheduleId!);
@@ -32,6 +33,7 @@ void main() async {
     'list schedule',
     () async {
       final allSchedules = await schedules.list();
+      expect(allSchedules.exception, isNull);
       expect(allSchedules.hasValue, true);
       expect(allSchedules.value, isA<List<Schedule>>());
     },
@@ -44,7 +46,7 @@ void main() async {
         PublishRequest(
           destination: Destination(
             type: DestinationType.url,
-            url: 'https://rebaz-qstash.requestcatcher.com/test',
+            url: destinationUrl,
           ),
           cron: '9 * * * *',
         ),
@@ -52,6 +54,7 @@ void main() async {
 
       final deleteResult = await schedules
           .delete(DeleteScheduleRequest(result.value.scheduleId!));
+      expect(deleteResult.exception, isNull);
       expect(deleteResult.hasError, false);
       expect(deleteResult.value, 'Accepted');
     },
