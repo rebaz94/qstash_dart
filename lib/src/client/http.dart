@@ -59,9 +59,6 @@ class UpstashResponse<TResult> {
         ? res.body
         : json.decode(res.body);
 
-    /// TODO:remove this line below
-    print(decodedValue);
-
     final TResult bodyResult;
     String? error;
 
