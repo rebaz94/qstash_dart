@@ -91,7 +91,7 @@ class PublishRequest {
   ///
   /// We highly recommend sending a `Content-Type` header along, as this will help your destination
   /// server to understand the content of the message.
-  final Map<String, dynamic>? headers;
+  final Map<String, String>? headers;
 
   /// Optionally delay the delivery of this message.
   ///
@@ -148,9 +148,13 @@ class PublishRequest {
   /// @default undefined
   final String? cron;
 
-  PublishRequest copyWith({Map<String, String>? headers, Object? body}) {
+  PublishRequest copyWith({
+    Destination? destination,
+    Map<String, String>? headers,
+    Object? body,
+  }) {
     return PublishRequest(
-      destination: destination,
+      destination: destination ?? this.destination,
       body: body ?? this.body,
       headers: headers ?? this.headers,
       delay: delay,
