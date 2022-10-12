@@ -78,18 +78,17 @@ class Receiver {
 
     final message = utf8.encode('$header.$payload');
     final digest = hmacSha256.convert(message);
-    final digestBase64 = base64Encode(digest.bytes) //
-        .replaceAll('+', '-')
-        .replaceAll('/', '_');
+    final digestBase64 = base64Url.encode(digest.bytes);
 
-    if (signature.replaceAll(_paddingRegExp, '') != digestBase64.replaceAll(_paddingRegExp, '')) {
+    if (signature.replaceAll(_paddingRegExp, '') !=
+        digestBase64.replaceAll(_paddingRegExp, '')) {
       throw SignatureError('signature does not match');
     }
 
     final normalizedPayload = base64.normalize(payload);
     final decodedPayload = Map<String, dynamic>.from(
       jsonDecode(
-        String.fromCharCodes(base64Decode(normalizedPayload)),
+        String.fromCharCodes(base64Url.decode(normalizedPayload)),
       ),
     );
 
@@ -98,7 +97,9 @@ class Receiver {
     }
 
     if (request.url != null && decodedPayload['sub'] != request.url) {
-      throw SignatureError('invalid subject: ${decodedPayload['sub']}, want: ${request.url}');
+      throw SignatureError(
+        'invalid subject: ${decodedPayload['sub']}, want: ${request.url}',
+      );
     }
 
     final exp = decodedPayload['exp'] as int;
@@ -116,8 +117,10 @@ class Receiver {
       request.body is String ? utf8.encode(request.body) : request.body,
     );
 
-    final payloadBody = (decodedPayload['body'] as String).replaceAll(_paddingRegExp, '');
-    final base64EncodedBody = base64Url.encode(bodyHash.bytes).replaceAll(_paddingRegExp, '');
+    final payloadBody =
+        (decodedPayload['body'] as String).replaceAll(_paddingRegExp, '');
+    final base64EncodedBody =
+        base64Url.encode(bodyHash.bytes).replaceAll(_paddingRegExp, '');
     if (payloadBody != base64EncodedBody) {
       throw SignatureError(
         'body hash does not match, want: $payloadBody, got: $base64EncodedBody',
