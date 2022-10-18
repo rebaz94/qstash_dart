@@ -5,12 +5,7 @@ edge runtimes.
 
 It is 100% built on stateless HTTP requests and designed for:
 
-- Serverless functions (AWS Lambda ...)
-- Cloudflare Workers (see
-  [the example](https://github.com/upstash/sdk-qstash-ts/tree/main/examples/cloudflare-workers))
-- Fastly Compute@Edge
-- Next.js, including [edge](https://nextjs.org/docs/api-reference/edge-runtime)
-- Deno
+- Serverless functions (AWS Lambda, Cloud Run, Cloud Functions ...)
 - Client side web/mobile applications
 - WebAssembly
 - and other environments where HTTP is preferred over TCP.
@@ -28,7 +23,7 @@ QStash is the message broker between your serverless apps. You send an HTTP
 request to QStash, that includes a destination, a payload and optional settings.
 We durably store your message and will deliver it to the destination API via
 HTTP. In case the destination is not ready to receive the message, we will retry
-the message later, to guarentee at-least-once delivery.
+the message later, to guarantee at-least-once delivery.
 
 ## Quick Start
 
