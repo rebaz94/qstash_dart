@@ -55,7 +55,7 @@ class UpstashResponse<TResult> {
     http.Response res,
     TResult Function(TResponse) modelFromJson,
   ) {
-    final decodedValue = const [String, int, bool].contains(TResult)
+    final decodedValue = const [String, int, double, num, bool].contains(TResult)
         ? res.body
         : json.decode(res.body);
 
