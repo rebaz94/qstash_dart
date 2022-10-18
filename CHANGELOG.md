@@ -1,3 +1,7 @@
+## 1.0.0+2
+
+- Fix pub score
+
 ## 1.0.0+1
 
 - Improve parsing
