@@ -2,6 +2,7 @@ name: qstash_dart
 description: QStash is an HTTP based messaging and scheduling solution for serverless and edge runtimes.
 version: 1.0.0
 homepage: https://github.com/rebaz94/qstash_dart
+issue_tracker: https://github.com/rebaz94/qstash_dart/issues
 
 environment:
   sdk: '>=2.18.0 <3.0.0'
