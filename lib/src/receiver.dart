@@ -7,6 +7,7 @@ class VerifyRequest {
     required this.signature,
     required this.body,
     this.url,
+    this.clockTolerance,
   });
 
   /// The signature from the `upstash-signature` header.
@@ -20,6 +21,11 @@ class VerifyRequest {
   ///
   /// Omit empty to disable checking the url.
   final String? url;
+
+  /// Number of seconds to tolerate when checking `nbf` and `exp` claims, to deal with small clock differences among different servers
+  ///
+  /// @default 0
+  final int? clockTolerance;
 }
 
 class SignatureError implements Exception {
@@ -105,11 +111,13 @@ class Receiver {
     final exp = decodedPayload['exp'] as int;
     final nbf = decodedPayload['nbf'] as int;
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    if (now > exp) {
+    final clockTolerance = request.clockTolerance ?? 0;
+    if (now - clockTolerance > exp) {
+      print({'now': now, 'exp': exp});
       throw SignatureError('token has expired');
     }
 
-    if (now < nbf) {
+    if (now + clockTolerance < nbf) {
       throw SignatureError('token is not yet valid');
     }
 

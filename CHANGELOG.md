@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Add clockTolerance config
+
 ## 1.0.0+3
 
 - Update readme
